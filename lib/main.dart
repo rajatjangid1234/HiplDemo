@@ -1,53 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_screen.dart';
-import 'login_screen.dart';
 
-void main() {0
-  runApp(MyApp());
+import 'loginScreen.dart';
+
+
+void main() {
+  runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
+  }
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: LoginPageScreen()
     );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _checkLoginStatus();
-  }
-
-  _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-    if (isLoggedIn) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginScreen()));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
